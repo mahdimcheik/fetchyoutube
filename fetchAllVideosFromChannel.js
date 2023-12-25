@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const apiKey = "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM"; // Replace with your actual API key
+const apiKey = "AMIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM"; // Replace with your actual API key
 const channelId = "@RelaxanteMusique"; // Replace with the ID of the YouTube channel you want to fetch
 
 const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date`;
