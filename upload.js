@@ -3,7 +3,7 @@ const fs = require("fs");
 
 const youtube = google.youtube({
   version: "v3",
-  auth: "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM", // Replace with your actual API key
+  auth: "AMIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM", // Replace with your actual API key
 });
 
 youtube.videos.insert(
