@@ -1,25 +1,36 @@
 const axios = require("axios");
+const fs = require("fs");
+require("dotenv").config();
 
-const apiKey = "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM"; // Replace with your actual API key
-const videoId = "u4NYbhjYpw8"; // Replace with the ID of the YouTube video you want to fetch
+// Set your YouTube Data API key
+const apiKey = process.env.API_KEY; // Replace with your actual API key
+const videoId = "f0UnPC8Xu_I"; // Replace with the ID of the YouTube video you want to fetch
 
-const apiUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoId}&part=snippet,contentDetails`;
+async function fetchSingleVideo(apiKey, videoId) {
+  const apiUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoId}&part=snippet,contentDetails`;
 
-axios
-  .get(apiUrl)
-  .then((response) => {
-    const video = response.data.items[0];
-    const title = video.snippet.title;
-    const thumbnails = video.snippet.thumbnails;
-    console.log("thumbnail :", thumbnails.default.url);
-    const description = video.snippet.description;
-    const duration = video.contentDetails.duration;
+  const response = await axios.get(apiUrl);
 
-    console.log(`Title: ${title}`);
-    console.log(`Description: ${description}`);
-    console.log(`Duration: ${duration}`);
-    console.log("suggestions :", video.snippet.tags);
-  })
-  .catch((error) => {
-    console.error("Error fetching video:", error);
-  });
+  const video = response.data.items[0];
+  const title = video.snippet.title;
+  const thumbnails = video.snippet.thumbnails.default.url;
+  // console.log("thumbnail :", thumbnails.default.url);
+  const description = video.snippet.description;
+  const duration = video.contentDetails.duration
+    .replace("PT", "")
+    .replace("H", ":")
+    .replace("M", ":")
+    .replace("S", "");
+  const publishedAt = video.snippet.publishedAt.split("T")[0];
+
+  const tags = video.snippet.tags;
+
+  await timeOut();
+  return { title, thumbnails, description, publishedAt, duration, tags };
+}
+async function timeOut(time = 50) {
+  setTimeout(() => {}, time + Math.random() * 40);
+}
+
+// fetchSingleVideo(apiKey, videoId);
+module.exports = fetchSingleVideo;

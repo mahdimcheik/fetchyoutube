@@ -1,9 +1,10 @@
 const { google } = require("googleapis");
 const fs = require("fs");
+require("dotenv").config();
 
 const youtube = google.youtube({
   version: "v3",
-  auth: "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM", // Replace with your actual API key
+  auth: process.env.API_KEY, // Replace with your actual API key
 });
 
 youtube.videos.insert(

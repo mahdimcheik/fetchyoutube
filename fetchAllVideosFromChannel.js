@@ -1,23 +1,24 @@
 const axios = require("axios");
+const fetchSingleVideo = require("./singleVideoFetch");
 
-const apiKey = "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM"; // Replace with your actual API key
-const channelId = "@RelaxanteMusique"; // Replace with the ID of the YouTube channel you want to fetch
+require("dotenv").config();
 
-const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date`;
+// Set your YouTube Data API key
+const apiKey = process.env.API_KEY; // Replace with your actual API key
+const channelId = "UCW5YeuERMmlnqo4oq8vwUpg"; // Replace with the ID of the YouTube channel you want to fetch
 
-let videos = [];
-axios
-  .get(apiUrl)
-  .then((response) => {
-    videos = response.data.items;
-    videos.forEach((video) => {
-      const title = video.snippet.title;
-      const id = video.id;
-      const videoId = video.id.videoId;
-      console.log(`Title: ${title}, Video ID: ${videoId}`);
-      console.log("id , ", id.videoId);
-    });
-  })
-  .catch((error) => {
-    console.error("Error fetching videos:", error);
-  });
+async function fetchChannelVideos() {
+  const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=100`;
+  // const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoCategoryId=10&key=${apiKey}&regionCode=US`;
+
+  let videos = [];
+  const response = await axios.get(apiUrl);
+  videos = response.data.items;
+  console.log("videos : ", videos[0]);
+  for (let i = 0; i < videos.length; i++) {
+    const title = videos[i].snippet?.title ?? "no title";
+    const id = videos[i].id.videoId;
+    await fetchSingleVideo(apiKey, id);
+  }
+}
+fetchChannelVideos();

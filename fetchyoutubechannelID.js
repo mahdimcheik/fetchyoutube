@@ -1,6 +1,8 @@
 const axios = require("axios");
+require("dotenv").config();
 
-const apiKey = "AIzaSyBT8cbvJmJrceNAOrJnDQFpsk7i8lkGAYM"; // Replace with your actual API key
+// Set your YouTube Data API key
+const apiKey = process.env.API_KEY;
 const channelId = "UCvSLvgYtFw_9Ubdjk74OqbA"; // Replace with the ID of the YouTube channel you want to fetch
 
 const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=10`;
