@@ -3,15 +3,6 @@ const fetchSingleVideo = require("./singleVideoFetch");
 const fs = require("fs");
 require("dotenv").config();
 
-const tutos = [
-  { js: ["javascript", "js", "nodejs", "react", "angular", "vuejs"] },
-  { php: ["php", "symphony", "laravel", "cakephp"] },
-  { html: ["html"] },
-  { css: ["css", "sass"] },
-  { sql: ["sql", "mysql"] },
-  { ruby: ["ruby"] },
-];
-
 // Set your YouTube Data API key
 const API_KEY = process.env.API_KEY;
 // Function to fetch playlist items by playlist ID
@@ -23,7 +14,7 @@ async function fetchPlaylistItems(playlistId) {
         params: {
           part: "snippet",
           playlistId: playlistId,
-          maxResults: 50, // Adjust as needed
+          maxResults: 100, // Adjust as needed
           key: API_KEY,
         },
       }
@@ -45,7 +36,7 @@ async function fetchPlaylistByChannel(channelId) {
         params: {
           part: "snippet",
           channelId: channelId,
-          maxResults: 10, // Adjust as needed
+          maxResults: 50, // Adjust as needed
           key: API_KEY,
         },
       }
@@ -66,10 +57,11 @@ async function timeOut(time = 50) {
 // Example: Fetch playlist by channel ID and print playlist items
 async function main() {
   // "UCHN86nooFunM5hNQBEQ7tCw   // react
-  const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
+  //   const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
   // const channelId = "UCmXmlB4-HJytD7wek0Uo97A"; // js
   // const category = "javascript";
-  const category = "dotnet";
+  const channelId = "UCj_iGliGCkLcHSZ8eqVNPDQ"; // graphikart
+  const category = "php, laravel";
 
   const playlists = await fetchPlaylistByChannel(channelId);
   const filename = "dotnet.sql";
@@ -88,7 +80,8 @@ async function main() {
         thumbnails VARCHAR(255) not null,
         duration varchar(50) not null,
         publishDate date not null,
-        tags TEXT null
+        tags TEXT null,
+        category varchar(255) not null
     );
     create table
     playlist(
@@ -98,7 +91,7 @@ async function main() {
       category VARCHAR(255) not null
     );`,
       () => {
-        console.log("file created");
+        console.log("tables created");
       }
     );
   }
@@ -107,10 +100,11 @@ async function main() {
     console.log("Playlists :", playlists);
     const stream = fs.createWriteStream(filename, { flags: "a" });
 
-    for (let j = 0; j < playlists.length; j++) {
-      stream.write(`
+    // for (let j = 0; j < playlists.length; j++) {
+    const j = 1;
+    stream.write(`
       insert INTO
-      playlist (
+    playlist (
       playlistId,
       playlistTitle,
       category
@@ -121,16 +115,16 @@ VALUES (
   "${category}"
     );`);
 
-      console.log("playliast id : ", playlists[j].id);
-      const playlistItems = await fetchPlaylistItems(playlists[j].id);
-      for (let i = 0; i < playlistItems.length; i++) {
-        const result = await fetchSingleVideo(
-          API_KEY,
-          playlistItems[i].snippet.resourceId.videoId
-        );
-        stream.write(`
+    console.log("playliast id : ", playlists[j].id);
+    const playlistItems = await fetchPlaylistItems(playlists[j].id);
+    for (let i = 0; i < playlistItems.length; i++) {
+      const result = await fetchSingleVideo(
+        API_KEY,
+        playlistItems[i].snippet.resourceId.videoId
+      );
+      stream.write(`
         insert INTO
-        video (
+      video (
           ytId,
           title,
           playlistTitle,
@@ -139,9 +133,10 @@ VALUES (
           thumbnails,
           duration,
           publishDate,
-          tags
+          tags,
+          category
       )
-      VALUES (
+  VALUES (
           "${result.id}",
           "${result.title}",
           "${playlists[j].snippet?.title ?? "Titre Playlist"}",
@@ -153,12 +148,15 @@ VALUES (
           "${result.thumbnails ?? "https://placehold.co/100x150/EEE/31343C"}",
           "${result.duration ?? "10:00"}",
           "${result.publishedAt ?? "21-04-1986"}",
-          "${result.tags?.join(",") ?? category}"
+          "${result.tags?.join(",") ?? category}",
+          "${category}"
       );`);
-        await timeOut();
-      }
+
+      await timeOut();
     }
+    // }
     stream.end();
+    // }
   } else {
     console.log("No playlists found for the channel.");
   }

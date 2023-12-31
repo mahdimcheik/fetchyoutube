@@ -4,12 +4,30 @@ const fs = require("fs");
 require("dotenv").config();
 
 const tutos = [
-  { js: ["javascript", "js", "nodejs", "react", "angular", "vuejs"] },
-  { php: ["php", "symphony", "laravel", "cakephp"] },
-  { html: ["html"] },
-  { css: ["css", "sass"] },
-  { sql: ["sql", "mysql"] },
-  { ruby: ["ruby"] },
+  [0, "javascript"],
+  [1, "php"],
+  [2, "javascript"],
+  [4, "sql"],
+  [5, "typescript"],
+  [7, "javascript"],
+  [8, "javascript"],
+  [9, "wordpress"],
+  [11, "wordpress"],
+  [12, "wordpress"],
+  [17, "style"],
+  [18, "php"],
+  [19, "php"],
+  [21, "style"],
+  [23, "html"],
+  [24, "php"],
+  [26, "php"],
+  [27, "php"],
+  [29, "javascript"],
+  [30, "style"],
+  [31, "php"],
+  [32, "sql"],
+  [33, "html css"],
+  [34, "javascript"],
 ];
 
 // Set your YouTube Data API key
@@ -45,7 +63,7 @@ async function fetchPlaylistByChannel(channelId) {
         params: {
           part: "snippet",
           channelId: channelId,
-          maxResults: 10, // Adjust as needed
+          maxResults: 50, // Adjust as needed
           key: API_KEY,
         },
       }
@@ -66,8 +84,10 @@ async function timeOut(time = 50) {
 // Example: Fetch playlist by channel ID and print playlist items
 async function main() {
   // "UCHN86nooFunM5hNQBEQ7tCw   // react
-  const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
+  //   const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
   // const channelId = "UCmXmlB4-HJytD7wek0Uo97A"; // js
+  const channelId = "UCj_iGliGCkLcHSZ8eqVNPDQ"; // graphicart
+
   // const category = "javascript";
   const category = "dotnet";
 
@@ -107,7 +127,7 @@ async function main() {
     console.log("Playlists :", playlists);
     const stream = fs.createWriteStream(filename, { flags: "a" });
 
-    for (let j = 0; j < playlists.length; j++) {
+    for (let j = 0; j < tutos.length; j++) {
       stream.write(`
       insert INTO
       playlist (
@@ -116,9 +136,9 @@ async function main() {
       category
     )
 VALUES (
-  "${playlists[j].id}",
-  "${playlists[j].snippet.title ?? "Titre Playlist"}",
-  "${category}"
+  "${playlists[tutos[j][0]].id}",
+  "${playlists[tutos[j][0]].snippet.title ?? "Titre Playlist"}",
+  "${tutos[j][1]}"
     );`);
 
       console.log("playliast id : ", playlists[j].id);
@@ -144,8 +164,8 @@ VALUES (
       VALUES (
           "${result.id}",
           "${result.title}",
-          "${playlists[j].snippet?.title ?? "Titre Playlist"}",
-          "${playlists[j].id}",
+          "${playlists[tutos[j][0]].snippet?.title ?? "Titre Playlist"}",
+          "${playlists[tutos[j][0]].id}",
           "${
             result.description?.replace(/[^a-zA-Z0-9 ]/g, "") ??
             "sans description"
@@ -153,7 +173,7 @@ VALUES (
           "${result.thumbnails ?? "https://placehold.co/100x150/EEE/31343C"}",
           "${result.duration ?? "10:00"}",
           "${result.publishedAt ?? "21-04-1986"}",
-          "${result.tags?.join(",") ?? category}"
+          "${result.tags?.join(",") ?? tutos[j][1]}"
       );`);
         await timeOut();
       }

@@ -1,11 +1,12 @@
 // Load environment variables from .env file
 require("dotenv").config();
+const filename = "dotnet.sql";
 
 const fs = require("node:fs");
 const path = require("node:path");
 
 // Build the path to the schema SQL file
-const schema = path.join(__dirname, "myDb.sql");
+const schema = path.join(__dirname, filename);
 
 // Get database connection details from .env file
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
@@ -16,7 +17,7 @@ const mysql = require("mysql2/promise");
 const migrate = async () => {
   try {
     // Read the SQL statements from the schema file
-    const sql = fs.readFileSync("myDb.sql", "utf8");
+    const sql = fs.readFileSync(filename, "utf8");
 
     // Create a specific connection to the database
     const database = await mysql.createConnection({
