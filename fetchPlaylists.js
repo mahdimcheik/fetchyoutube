@@ -45,7 +45,7 @@ async function fetchPlaylistByChannel(channelId) {
         params: {
           part: "snippet",
           channelId: channelId,
-          maxResults: 10, // Adjust as needed
+          maxResults: 50, // Adjust as needed
           key: API_KEY,
         },
       }
@@ -65,14 +65,22 @@ async function timeOut(time = 50) {
 
 // Example: Fetch playlist by channel ID and print playlist items
 async function main() {
+  let counter = 0;
   // "UCHN86nooFunM5hNQBEQ7tCw   // react
-  const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
+  // const channelId = "UCHN86nooFunM5hNQBEQ7tCw"; // dotnet
+  // const channelId = "UCj_iGliGCkLcHSZ8eqVNPDQ"; // graphikart
+  // const channelId = "UCW5YeuERMmlnqo4oq8vwUpg"; // net ninja
+  // const channelId = "UCWv7vMbMWH4-V0ZXdmDpPBA"; // mosh
+  const channelId = "UC8butISFwT-Wl7EV0hUK0BQ"; // free camp
+
   // const channelId = "UCmXmlB4-HJytD7wek0Uo97A"; // js
   // const category = "javascript";
-  const category = "dotnet";
+  // UCj_iGliGCkLcHSZ8eqVNPDQ // graphicart
+  const category = "javascript";
+  const language = "english";
 
   const playlists = await fetchPlaylistByChannel(channelId);
-  const filename = "dotnet.sql";
+  const filename = "graphikart.sql";
 
   if (!fs.existsSync(filename)) {
     fs.writeFile(
@@ -95,7 +103,8 @@ async function main() {
       id int unsigned primary key auto_increment not null,
       playlistId VARCHAR(255) not null,
       playlistTitle VARCHAR(255) not null,
-      category VARCHAR(255) not null
+      category VARCHAR(255) not null,
+      language VARCHAR(255) not null default 'english'
     );`,
       () => {
         console.log("file created");
@@ -113,12 +122,14 @@ async function main() {
       playlist (
       playlistId,
       playlistTitle,
-      category
+      category,
+      language
     )
 VALUES (
   "${playlists[j].id}",
   "${playlists[j].snippet.title ?? "Titre Playlist"}",
-  "${category}"
+  "${category}",
+  "${language}"
     );`);
 
       console.log("playliast id : ", playlists[j].id);
@@ -128,6 +139,8 @@ VALUES (
           API_KEY,
           playlistItems[i].snippet.resourceId.videoId
         );
+        counter++;
+        console.log("counter :", counter);
         stream.write(`
         insert INTO
         video (

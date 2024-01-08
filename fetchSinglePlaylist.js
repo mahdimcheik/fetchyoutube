@@ -138,13 +138,10 @@ VALUES (
       )
   VALUES (
           "${result.id}",
-          "${result.title}",
+          "${result.titlereplace(/['"*`]/g, "")}",
           "${playlists[j].snippet?.title ?? "Titre Playlist"}",
           "${playlists[j].id}",
-          "${
-            result.description?.replace(/[^a-zA-Z0-9 ]/g, "") ??
-            "sans description"
-          }",
+          "${result.description?.replace(/['"*`]/g, "") ?? "sans description"}",
           "${result.thumbnails ?? "https://placehold.co/100x150/EEE/31343C"}",
           "${result.duration ?? "10:00"}",
           "${result.publishedAt ?? "21-04-1986"}",

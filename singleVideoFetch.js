@@ -12,12 +12,12 @@ async function fetchSingleVideo(apiKey, videoId) {
   const response = await axios.get(apiUrl);
 
   const video = response.data.items[0];
-  // console.log("video details: ", video);
+  // console.log("video details: ", video.snippet.thumbnails);
   const id = video.id;
-  const title = video.snippet.title;
-  const thumbnails = video.snippet.thumbnails.default.url;
+  const title = video.snippet.title.replaceAll('"', "");
+  const thumbnails = video.snippet.thumbnails.high.url;
   // console.log("thumbnail :", thumbnails.default.url);
-  const description = video.snippet.description;
+  const description = video.snippet.description.replaceAll('"', "");
   const duration = video.contentDetails.duration
     .replace("PT", "")
     .replace("H", ":")
@@ -34,5 +34,9 @@ async function timeOut(time = 50) {
   setTimeout(() => {}, time + Math.random() * 40);
 }
 
-fetchSingleVideo(apiKey, videoId);
+// async function test() {
+//   const res = await fetchSingleVideo(apiKey, videoId);
+//   // console.log(res);
+// }
+// test();
 module.exports = fetchSingleVideo;

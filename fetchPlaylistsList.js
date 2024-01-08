@@ -41,7 +41,7 @@ async function fetchPlaylistItems(playlistId) {
         params: {
           part: "snippet",
           playlistId: playlistId,
-          maxResults: 50, // Adjust as needed
+          maxResults: 50,
           key: API_KEY,
         },
       }
@@ -63,7 +63,7 @@ async function fetchPlaylistByChannel(channelId) {
         params: {
           part: "snippet",
           channelId: channelId,
-          maxResults: 50, // Adjust as needed
+          maxResults: 50,
           key: API_KEY,
         },
       }
@@ -76,7 +76,7 @@ async function fetchPlaylistByChannel(channelId) {
     throw error;
   }
 }
-// timeout between fetch
+// timeout between fetches
 async function timeOut(time = 50) {
   setTimeout(() => {}, time + Math.random() * 40);
 }
@@ -163,13 +163,10 @@ VALUES (
       )
       VALUES (
           "${result.id}",
-          "${result.title}",
+          "${result.title.replace(/['"*`]/g, "")}",
           "${playlists[tutos[j][0]].snippet?.title ?? "Titre Playlist"}",
           "${playlists[tutos[j][0]].id}",
-          "${
-            result.description?.replace(/[^a-zA-Z0-9 ]/g, "") ??
-            "sans description"
-          }",
+          "${result.description?.replace(/['"*`]/g, "") ?? "sans description"}",
           "${result.thumbnails ?? "https://placehold.co/100x150/EEE/31343C"}",
           "${result.duration ?? "10:00"}",
           "${result.publishedAt ?? "21-04-1986"}",

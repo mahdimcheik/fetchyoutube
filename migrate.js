@@ -1,6 +1,6 @@
 // Load environment variables from .env file
 require("dotenv").config();
-const filename = "dotnet.sql";
+const filename = "graphikart.sql";
 
 const fs = require("node:fs");
 const path = require("node:path");
